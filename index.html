@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ug" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ياشلىق - ئالتۇن دەۋرنى ئەھمىيەتلىك ئۆتكۈزۈش</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Uyghur RTL & Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ALKATIP+Tor&family=UKIJ+Tuz&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#080711',
+                            card: 'rgba(18, 16, 38, 0.75)',
+                            border: 'rgba(139, 92, 246, 0.3)',
+                            neonCyan: '#00f3ff',
+                            neonPink: '#ff007f',
+                            neonPurple: '#a855f7',
+                            neonGold: '#fbbf24',
+                        }
+                    },
+                    fontFamily: {
+                        uyghur: ['"ALKATIP Tor"', '"UKIJ Tuz"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon-glow': '0 0 25px rgba(168, 85, 247, 0.4), 0 0 10px rgba(0, 243, 255, 0.2)',
+                        'cyan-glow': '0 0 20px rgba(0, 243, 255, 0.5)',
+                        'pink-glow': '0 0 20px rgba(255, 0, 127, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'ALKATIP Tor', 'UKIJ Tuz', 'Inter', sans-serif;
+            background-color: #080711;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Background Particle Canvas Style */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(18, 16, 38, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(0, 243, 255, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.3);
+        }
+
+        /* Custom Neon Text Effects */
+        .text-glow-cyan {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+        .text-glow-pink {
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.7), 0 0 20px rgba(255, 0, 127, 0.4);
+        }
+        .text-glow-gold {
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080711;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a855f7;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyber-neonPink selection:text-white">
+
+    <!-- Canvas background for dynamic floating neon particles -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-cyber-border px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-neonPink to-cyber-neonCyan flex items-center justify-center text-white text-xl font-bold shadow-neon-glow">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <span class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyber-neonCyan via-cyber-neonPurple to-cyber-neonPink">
+                    ياشلىق
+                </span>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-8 text-base">
+                <a href="#hero" class="hover:text-cyber-neonCyan transition-colors">باش بەت</a>
+                <a href="#principles" class="hover:text-cyber-neonCyan transition-colors">ئاساسىي ئۆلچەملەر</a>
+                <a href="#time-calculator" class="hover:text-cyber-neonCyan transition-colors">ۋاقىت ھېسابلىغۇچ</a>
+                <a href="#tracker" class="hover:text-cyber-neonCyan transition-colors">نىشان ۋە ئادەت</a>
+                <a href="#quotes" class="hover:text-cyber-neonCyan transition-colors">ھىكمەتلەر</a>
+            </div>
+
+            <a href="#tracker" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-cyber-neonPurple to-cyber-neonCyan text-white font-bold text-sm shadow-cyan-glow hover:opacity-90 transition-all hover:scale-105 active:scale-95">
+                نىشان بەلگىلەش
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen flex items-center justify-center relative pt-24 px-4 overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center z-10 space-y-8">
+            <div class="inline-block px-4 py-1.5 rounded-full glass-panel text-cyber-neonCyan text-sm font-semibold border border-cyber-neonCyan/30 mb-2">
+                ✨ ياشلىق — قايتا كەلمەيدىغان بۈيۈك نېمەت
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight">
+                ياشلىق ۋاقتىڭىزنى <br>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyber-neonCyan via-cyber-neonPurple to-cyber-neonPink text-glow-cyan">
+                    ئەھمىيەتلىك ۋە قىممەتلىك
+                </span> 
+                ئۆتكۈزۈڭ!
+            </h1>
+
+            <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                ياشلىق—پەقەت بىر ياش مەزگىلىلا ئەمەس، بەلكى كۈچ-قۇۋۋەت، ئىمكانىيەت ۋە ئارزۇلارنىڭ ئەڭ يۇقىرى چوققىسى. ئۇنى بىكارچىلىقتا ئەمەس، بىلىم ئېلىش، سالامەتلىك، روھىي تەرەققىيات ۋە جەمئىيەتكە نەپ يەتكۈزۈش بىلەن زىننەتلەڭ!
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-4 pt-4">
+                <a href="#principles" class="px-8 py-4 rounded-xl bg-gradient-to-r from-cyber-neonPink to-cyber-neonPurple text-white text-lg font-bold shadow-pink-glow hover:scale-105 transition-transform flex items-center gap-3">
+                    <span>باشلاش</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <a href="#time-calculator" class="px-8 py-4 rounded-xl glass-panel text-cyber-neonCyan border border-cyber-neonCyan/40 hover:bg-cyber-neonCyan/10 text-lg font-bold transition-all hover:scale-105 flex items-center gap-3">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    <span>ۋاقىت قىممىتىنى ھېسابلاش</span>
+                </a>
+            </div>
+
+            <!-- Stats/Counters Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 text-right">
+                <div class="glass-panel p-5 rounded-2xl">
+                    <div class="text-3xl font-black text-cyber-neonCyan text-glow-cyan mb-1">24/7</div>
+                    <div class="text-xs text-gray-400">تەڭپۇڭ پۇرسەت</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl">
+                    <div class="text-3xl font-black text-cyber-neonPink text-glow-pink mb-1">100%</div>
+                    <div class="text-xs text-gray-400">ئىقتىدار ۋە غەيرەت</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl">
+                    <div class="text-3xl font-black text-cyber-neonPurple mb-1">10,000+</div>
+                    <div class="text-xs text-gray-400">مۇۋەپپەقىيەت ئادىتى</div>
+                </div>
+                <div class="glass-panel p-5 rounded-2xl">
+                    <div class="text-3xl font-black text-cyber-neonGold text-glow-gold mb-1">ئالتۇن</div>
+                    <div class="text-xs text-gray-400">ئەڭ قىممەتلىك بۇرۇلۇش</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Principles Section -->
+    <section id="principles" class="py-24 px-4 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-cyber-neonCyan to-cyber-neonPurple">
+                ياشلىقنى مەنىلىك قىلىشنىڭ 5 ئاساسىي تۈپـى
+            </h2>
+            <p class="text-gray-400 text-base md:text-lg max-w-2xl mx-auto">
+                بۇ بەش ئاساسنى ھاياتىڭىزغا تەتبىقلىسىڭىز، ياشلىق دەۋرىڭىز پۇشمانسىز، كۆركەم ۋە نەتىجىلىك ئۆتىدۇ.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Card 1: Bilim -->
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-neonCyan/20 border border-cyber-neonCyan flex items-center justify-center text-cyber-neonCyan text-3xl mb-6 shadow-cyan-glow group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-cyber-neonCyan transition-colors">1. ئىلىم-بىلىم ۋە ئىقتىدار</h3>
+                <p class="text-gray-300 leading-relaxed text-sm">
+                    ئۈزلۈكسىز ئۆگىنىش—مۇۋەپپەقىيەتنىڭ كېپىلى. يېڭى تىللارنى، زامانىۋى تېخنىكىلارنى (مەسىلەن: سۈنئىي ئىدراك، كودلاش، ئانالىز) ئۆگىنىپ، ئۆزىڭىزنى جەمئىيەتتە ئورنى ئالماشتۇرۇلغۇسىز قىلىپ يېتىشتۈرۈڭ.
+                </p>
+            </div>
+
+            <!-- Card 2: Salametlik -->
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-neonPink/20 border border-cyber-neonPink flex items-center justify-center text-cyber-neonPink text-3xl mb-6 shadow-pink-glow group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-cyber-neonPink transition-colors">2. تەن ۋە روھ ساغلاملىقى</h3>
+                <p class="text-gray-300 leading-relaxed text-sm">
+                    ساغلام بەدەن بولمىسا، ھېچقانداق ئارزۇغا يەتكىلى بولمايدۇ. مۇنتىزىم تەنتەربىيە بىلەن شۇغۇللىنىڭ، ساغلام غىزالىنىڭ. شۇنىڭ بىلەن بىرگە روھىي ئاراملىق ۋە ئىجابىي تەپەككۇرنى ساقلاڭ.
+                </p>
+            </div>
+
+            <!-- Card 3: Vaqit -->
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-neonPurple/20 border border-cyber-neonPurple flex items-center justify-center text-cyber-neonPurple text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-cyber-neonPurple transition-colors">3. ۋاقىتنى ئۈنۈملۈك باشقۇرۇش</h3>
+                <p class="text-gray-300 leading-relaxed text-sm">
+                    ۋاقىت—قايتا تەكرارلانمايدىغان بايلىق. ئىقتىمائىي ئالاقە ۋاسىتىلىرىدە ۋاقىتنى ئىسراپ قىلماي، كۈنلۈك، ئايلىق نىشانلارنى بەلگىلەپ، ھەر بىر مىنۇتنى ئۆزىڭىزنى تەرەققىي قىلدۇرۇشقا ئىشلىتىڭ.
+                </p>
+            </div>
+
+            <!-- Card 4: Ahlaq -->
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group">
+                <div class="w-16 h-16 rounded-2xl bg-cyber-neonGold/20 border border-cyber-neonGold flex items-center justify-center text-cyber-neonGold text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-gem"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-cyber-neonGold transition-colors">4. گۈزەل ئاخلاق ۋە خاراكتېر</h3>
+                <p class="text-gray-300 leading-relaxed text-sm">
+                    ئىنساپ، سەمىمىيلىك، ئالاقە قىلىش ئىقتىدارى ۋە كىشىلىك ئالاقىدىكى ئاقىلانىلىق ياشلىقنىڭ ئەڭ گۈزەل زىننىتىدۇر. مەسئۇلىيەتچان بولۇڭ ۋە سۆزىڭىزدە تۇرۇڭ.
+                </p>
+            </div>
+
+            <!-- Card 5: Jem'iyet -->
+            <div class="glass-panel p-8 rounded-3xl relative overflow-hidden group md:col-span-2 lg:col-span-2">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-400 flex items-center justify-center text-emerald-400 text-3xl mb-6 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 text-white group-hover:text-emerald-400 transition-colors">5. جەمئىيەتكە نەپ يەتكۈزۈش ۋە خەيرخاھلىق</h3>
+                <p class="text-gray-300 leading-relaxed text-sm">
+                    ئەڭ ياخشى ئادەم—باشقىلارغا ئەڭ كۆپ نەپ يەتكۈزگەن ئادەمدۇر. كۆڭۈللۈك خىزمەتلەرگە قاتنىشىڭ، ئاجىزلارغا ياردەم بېرىڭ. ئۆزىڭىزدىن باشقا ئىنسانلارغىمۇ يورۇقلۇق بېغىشلاش ئارقىلىق ھاياتىڭىزغا ھەقىقىي مەنا كىرگۈزۈڭ.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Time Calculator / Age Countdown Section -->
+    <section id="time-calculator" class="py-20 px-4 max-w-5xl mx-auto">
+        <div class="glass-panel p-8 md:p-12 rounded-3xl border border-cyber-neonCyan/40 relative">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-black text-cyber-neonCyan text-glow-cyan mb-2">ياشلىق ۋاقتى ئالتۇن ھېسابلىغۇچ</h2>
+                <p class="text-gray-300 text-sm">ھازىرقى يېشىڭىزنى كىرگۈزۈپ، ياشلىق دەۋرىڭىزنىڭ ئۆتۈپ كېتىش نىسبىتىنى ۋە قالغان ۋاقتىڭىزنى كۆرۈڭ!</p>
+            </div>
+
+            <div class="max-w-md mx-auto space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold mb-2 text-gray-300">ھازىرقى يېشىڭىزنى كىرگۈزۈڭ (15 - 35 ياش ئارىلىقى):</label>
+                    <input type="number" id="user-age" min="15" max="35" value="20" class="w-full px-5 py-3 rounded-xl bg-cyber-dark/80 border border-cyber-border text-white text-lg focus:outline-none focus:border-cyber-neonCyan transition-all text-center font-bold">
+                </div>
+
+                <button onclick="calculateYouth()" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyber-neonCyan to-cyber-neonPurple text-white font-bold text-lg shadow-cyan-glow hover:opacity-95 transition-all">
+                    ھېسابلاش ۋە ئانالىز قىلىش
+                </button>
+            </div>
+
+            <div id="result-box" class="mt-8 hidden p-6 rounded-2xl bg-cyber-dark/60 border border-cyber-neonPurple/30 space-y-4">
+                <div class="flex justify-between items-center text-sm font-bold text-gray-300">
+                    <span>ياشلىق دەۋرى (15-35 ياش) مۇساپىسى:</span>
+                    <span id="percent-text" class="text-cyber-neonPink font-extrabold text-lg">0%</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-4 overflow-hidden p-0.5 border border-cyber-border">
+                    <div id="progress-bar" class="bg-gradient-to-r from-cyber-neonCyan via-cyber-neonPurple to-cyber-neonPink h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-center pt-4 border-t border-gray-800">
+                    <div>
+                        <div class="text-2xl font-bold text-cyber-neonCyan" id="days-left">0</div>
+                        <div class="text-xs text-gray-400">قالغان كۈن سانى (35 ياشقىچە)</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-cyber-neonGold text-glow-gold" id="hours-left">0</div>
+                        <div class="text-xs text-gray-400">قالغان سائەت سانى</div>
+                    </div>
+                </div>
+                <p id="advice-text" class="text-center text-xs text-cyber-neonCyan italic pt-2">
+                    "ھەر بىر سائەت—قايتا كېلمەيدىغان ئىمكانىيەتتۇر."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Habit Tracker & Goal Setter -->
+    <section id="tracker" class="py-20 px-4 max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-5xl font-black mb-4 text-white">
+                ياشلىقنى مەنىلىك قىلىش <span class="text-cyber-neonPink text-glow-pink">ئادەت بەلگىلىگۈچىسى</span>
+            </h2>
+            <p class="text-gray-400 text-sm md:text-base">بۈگۈندىن باشلاپ تۆۋەندىكى ئادەتلەرنى كۈندىلىك تۇرمۇشىڭىزغا كىرگۈزۈڭ ۋە تەكشۈرۈپ تۇرۇڭ!</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Habit List -->
+            <div class="glass-panel p-8 rounded-3xl space-y-4">
+                <h3 class="text-xl font-bold text-cyber-neonCyan mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check"></i>
+                    کۈندىلىك كۈچلىنىش ئادەتلىرى
+                </h3>
+
+                <div class="space-y-3" id="habit-container">
+                    <!-- Dynamic Habits inserted here -->
+                </div>
+            </div>
+
+            <!-- Custom Goal Setter -->
+            <div class="glass-panel p-8 rounded-3xl flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-cyber-neonPink mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-bullseye"></i>
+                        ئۆز نىشىنىڭىزنى قوشۇڭ
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-6">ياشلىقىڭىزدا يېتىشمەكچى بولغان بىر نىشاننى يېزىپ، كۆز ئالدىڭىزدا ساقلاڭ.</p>
+                    
+                    <div class="flex gap-2 mb-6">
+                        <input type="text" id="goal-input" placeholder="مەسىلەن: يېڭى تىل ئۆگىنىش..." class="flex-1 px-4 py-3 rounded-xl bg-cyber-dark border border-cyber-border text-white text-sm focus:outline-none focus:border-cyber-neonPink">
+                        <button onclick="addGoal()" class="px-5 py-3 rounded-xl bg-cyber-neonPink text-white font-bold hover:opacity-90 transition-all shadow-pink-glow">
+                            قوشۇش
+                        </button>
+                    </div>
+
+                    <ul id="goals-list" class="space-y-2">
+                        <!-- Custom Goals will appear here -->
+                    </ul>
+                </div>
+
+                <div class="mt-8 pt-4 border-t border-cyber-border text-center">
+                    <span class="text-xs text-gray-400">ئورۇندالغان ئادەتلەر نىسبىتى: </span>
+                    <span id="tracker-score" class="text-cyber-neonGold font-bold">0%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quotes Carousel / Inspirational Wisdom -->
+    <section id="quotes" class="py-20 px-4 max-w-4xl mx-auto text-center">
+        <div class="glass-panel p-10 md:p-14 rounded-3xl relative overflow-hidden border border-cyber-neonPurple/40">
+            <i class="fa-solid fa-quote-right text-6xl text-cyber-neonPurple/20 absolute top-4 right-6"></i>
+            
+            <div id="quote-content" class="relative z-10 space-y-6">
+                <p id="quote-text" class="text-2xl md:text-3xl font-bold leading-relaxed text-gray-100">
+                    "ياشلىق—ئۆمۈر نۇرىنىڭ ئەڭ يورۇق چاقنىشىدۇر. ئۇنى ئىسراپ قىلغان ئادەم كېيىنكى ئۆمرىنى قاراڭغۇلۇقتا ئۆتكۈزىدۇ."
+                </p>
+                <div id="quote-author" class="text-cyber-neonCyan font-semibold text-lg">
+                    — دانالار ئۆگىتى
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-4 mt-8">
+                <button onclick="prevQuote()" class="w-10 h-10 rounded-full glass-panel border border-cyber-neonCyan flex items-center justify-center text-cyber-neonCyan hover:bg-cyber-neonCyan hover:text-black transition-all">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <button onclick="nextQuote()" class="w-10 h-10 rounded-full glass-panel border border-cyber-neonCyan flex items-center justify-center text-cyber-neonCyan hover:bg-cyber-neonCyan hover:text-black transition-all">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call To Action / Final Message -->
+    <section class="py-20 px-4 text-center max-w-4xl mx-auto">
+        <div class="space-y-6">
+            <h2 class="text-3xl md:text-5xl font-black text-white">
+                بۈگۈندىن باشلاپ <span class="text-cyber-neonCyan text-glow-cyan">ھەرىكەتكە ئۆتۈڭ!</span>
+            </h2>
+            <p class="text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+                ئەتە دەيدىغان كۈنلەر تۈگەپ كەتمەيدۇ، بەلكى ياشلىقىڭىز تۈگەيدۇ. ھازىرلا بىر قەدەم تاشلاڭ، بىر كىتابنى ئېچىڭ، بىر ياخشى ئادەتنى باشلاڭ!
+            </p>
+            <div>
+                <a href="#tracker" class="inline-block px-10 py-4 rounded-full bg-gradient-to-r from-cyber-neonPink via-cyber-neonPurple to-cyber-neonCyan text-white font-extrabold text-xl shadow-neon-glow hover:scale-105 transition-all">
+                    ھازىر باشلايمەن
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-cyber-border glass-panel text-center text-sm text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                © 2026 ياشلىق ئالتۇن دەۋرى. بارلىق ھوقۇق ساقلانغان.
+            </div>
+            <div class="flex gap-6 text-gray-400">
+                <a href="#hero" class="hover:text-cyber-neonCyan transition-colors">باشقا قايتىش</a>
+                <a href="#principles" class="hover:text-cyber-neonCyan transition-colors">ئۆلچەملەر</a>
+                <a href="#tracker" class="hover:text-cyber-neonCyan transition-colors">نىشانلار</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript Logic -->
+    <script>
+        // --- 1. Background Neon Particles Effect ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const particles = [];
+        const particleCount = 65;
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.colors = ['#00f3ff', '#ff007f', '#a855f7', '#fbbf24'];
+                this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+                this.alpha = Math.random() * 0.7 + 0.3;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // --- 2. Youth Time Calculator Logic ---
+        function calculateYouth() {
+            const ageInput = document.getElementById('user-age').value;
+            let age = parseInt(ageInput);
+
+            if (isNaN(age) || age < 1) age = 20;
+
+            const startAge = 15;
+            const endAge = 35;
+            const totalYouthYears = endAge - startAge; // 20 years
+
+            let percentage = 0;
+            if (age <= startAge) {
+                percentage = 0;
+            } else if (age >= endAge) {
+                percentage = 100;
+            } else {
+                percentage = Math.round(((age - startAge) / totalYouthYears) * 100);
+            }
+
+            const yearsLeft = Math.max(0, endAge - age);
+            const daysLeft = yearsLeft * 365;
+            const hoursLeft = daysLeft * 24;
+
+            // UI Animations
+            const resultBox = document.getElementById('result-box');
+            resultBox.classList.remove('hidden');
+
+            document.getElementById('percent-text').innerText = `${percentage}%`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('days-left').innerText = daysLeft.toLocaleString();
+            document.getElementById('hours-left').innerText = hoursLeft.toLocaleString();
+
+            const adviceText = document.getElementById('advice-text');
+            if (percentage < 30) {
+                adviceText.innerText = '"ياشلىقىڭىزنىڭ ئەڭ ئالتۇن دەۋرىدىسىز! ھازىردىن باشلاپ پۇختا ئاساس سېلىڭ."';
+            } else if (percentage < 70) {
+                adviceText.innerText = '"ياشلىق يېرىمىدىن ئاشتى، نىشانلىرىڭىزنى تېزلىتىپ نەتىجە چىقىرىدىغان ۋاقىت كەلدى!"';
+            } else {
+                adviceText.innerText = '"ۋاقىت ئىنتايىن غەنىيمەت! تەجرىبىلىرىڭىزنى مۇستەھكەملەپ، ھەر بىر كۈندىن ئۈنۈم ئېلىڭ."';
+            }
+        }
+
+        // --- 3. Habit Tracker Logic ---
+        const defaultHabits = [
+            { id: 1, text: 'كۈندە ئازغىنە بولسىمۇ بىرەر كىتاب ئوقۇش', done: false },
+            { id: 2, text: 'كەم دەگەندە 30 مىنۇت تەنتەربىيە/بىدىن چېنىقتۇرۇش', done: false },
+            { id: 3, text: 'يېڭى بىر ئىقتىدار (تېخنىكا/تىل) ئۆگىنىشكە ۋاقىت ئاجرىتىش', done: false },
+            { id: 4, text: 'بىكارچى ئىجتىمائىي ئالاقە ۋاسىتىلىرىنى ئازايتىش', done: false },
+            { id: 5, text: 'پىلانلىق ئۇخلاش ۋە بالدۇر تۇرۇش', done: false }
+        ];
+
+        function renderHabits() {
+            const container = document.getElementById('habit-container');
+            container.innerHTML = '';
+
+            let completedCount = 0;
+
+            defaultHabits.forEach(habit => {
+                if(habit.done) completedCount++;
+
+                const div = document.createElement('div');
+                div.className = `flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer ${
+                    habit.done 
+                    ? 'bg-cyber-neonCyan/10 border-cyber-neonCyan/60 text-white' 
+                    : 'bg-cyber-dark/40 border-cyber-border text-gray-300 hover:border-cyber-neonCyan/40'
+                }`;
+                div.onclick = () => toggleHabit(habit.id);
+
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-md border flex items-center justify-center ${
+                            habit.done ? 'bg-cyber-neonCyan border-cyber-neonCyan text-black' : 'border-gray-500'
+                        }">
+                            ${habit.done ? '<i class="fa-solid fa-check text-xs"></i>' : ''}
+                        </div>
+                        <span class="text-sm ${habit.done ? 'line-through text-gray-400' : ''}">${habit.text}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            const total = defaultHabits.length + customGoals.length;
+            const customCompleted = customGoals.filter(g => g.done).length;
+            const scorePercent = total > 0 ? Math.round(((completedCount + customCompleted) / total) * 100) : 0;
+            document.getElementById('tracker-score').innerText = `${scorePercent}%`;
+        }
+
+        function toggleHabit(id) {
+            const habit = defaultHabits.find(h => h.id === id);
+            if(habit) {
+                habit.done = !habit.done;
+                renderHabits();
+            }
+        }
+
+        // Custom Goal Setter
+        const customGoals = [];
+
+        function addGoal() {
+            const input = document.getElementById('goal-input');
+            const value = input.value.trim();
+            if(value !== '') {
+                customGoals.push({ id: Date.now(), text: value, done: false });
+                input.value = '';
+                renderGoals();
+                renderHabits();
+            }
+        }
+
+        function toggleGoal(id) {
+            const goal = customGoals.find(g => g.id === id);
+            if(goal) {
+                goal.done = !goal.done;
+                renderGoals();
+                renderHabits();
+            }
+        }
+
+        function renderGoals() {
+            const list = document.getElementById('goals-list');
+            list.innerHTML = '';
+
+            customGoals.forEach(goal => {
+                const li = document.createElement('li');
+                li.className = `flex items-center justify-between p-3 rounded-xl border text-sm cursor-pointer ${
+                    goal.done ? 'bg-cyber-neonPink/10 border-cyber-neonPink/60' : 'bg-cyber-dark/50 border-cyber-border'
+                }`;
+                li.onclick = () => toggleGoal(goal.id);
+                li.innerHTML = `
+                    <span class="${goal.done ? 'line-through text-gray-400' : 'text-gray-200'}">${goal.text}</span>
+                    <i class="fa-solid ${goal.done ? 'fa-circle-check text-cyber-neonPink' : 'fa-circle text-gray-600'}"></i>
+                `;
+                list.appendChild(li);
+            });
+        }
+
+        // --- 4. Inspirational Quotes Carousel ---
+        const quotes = [
+            {
+                text: '"ياشلىق—ئۆمۈر نۇرىنىڭ ئەڭ يورۇق چاقنىشىدۇر. ئۇنى ئىسراپ قىلغان ئادەم كېيىنكى ئۆمرىنى قاراڭغۇلۇقتا ئۆتكۈزىدۇ."',
+                author: '— دانالار ئۆگىتى'
+            },
+            {
+                text: '"كېيىنكى بەش يىلدىن كېيىنكى ئورنىڭىز—بۈگۈن ئوقۇغان كىتابلىرىڭىز ۋە بىرگە بولغان ئادەملىرىڭىزگە باغلىق."',
+                author: '— جىم روھن'
+            },
+            {
+                text: '"ياشلىقتا ئۆگەنگەن بىلىم—تاشقا ئويۇلغان نەقشتۇر."',
+                author: '— خەلق ھېكمىتى'
+            },
+            {
+                text: '"ۋاقىتنى ئۆلتۈرمەڭ، چۈنكى ۋاقىت—ھاياتنىڭ ئۆزىدۇر."',
+                author: '— بېنجامىن فرانكلىن'
+            }
+        ];
+
+        let currentQuoteIndex = 0;
+
+        function updateQuote() {
+            const q = quotes[currentQuoteIndex];
+            const qText = document.getElementById('quote-text');
+            const qAuthor = document.getElementById('quote-author');
+
+            qText.style.opacity = 0;
+            qAuthor.style.opacity = 0;
+
+            setTimeout(() => {
+                qText.innerText = q.text;
+                qAuthor.innerText = q.author;
+                qText.style.opacity = 1;
+                qAuthor.style.opacity = 1;
+            }, 200);
+        }
+
+        function nextQuote() {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            updateQuote();
+        }
+
+        function prevQuote() {
+            currentQuoteIndex = (currentQuoteIndex - 1 + quotes.length) % quotes.length;
+            updateQuote();
+        }
+
+        // Initialize App state
+        window.onload = function() {
+            renderHabits();
+            calculateYouth();
+        };
+    </script>
+</body>
+</html>
